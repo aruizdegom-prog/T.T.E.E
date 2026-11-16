@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALDE ELKARRERAGILEAK</title>
+<style>
+:root{--ink:#26365f;--cream:#fffaf0}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:14px;background:linear-gradient(125deg,#b58b5d 0%,#313e70 45%,#8a70bb 72%,#46a5a4 100%);font-family:"Trebuchet MS",Arial,sans-serif;color:var(--ink)}
+.board{max-width:1900px;margin:auto;min-height:calc(100vh - 28px);display:flex;flex-direction:column;gap:14px}
+header{position:relative;overflow:hidden;border:4px solid white;border-radius:32px;background:linear-gradient(100deg,#fff8df,#f7eaff 58%,#dff8ff);padding:17px 20px 14px;text-align:center;box-shadow:0 5px 15px #24304a35}
+header:before,header:after{position:absolute;font-size:42px;font-weight:900;opacity:.18;pointer-events:none}
+header:before{content:"＋";left:12%;top:8px;color:#ee8b56}
+header:after{content:"÷";right:14%;top:4px;color:#6c5ba8}
+h1{margin:0;font-family:"Cooper Black","Arial Rounded MT Bold",Georgia,serif;font-size:clamp(2rem,4.3vw,4.2rem);letter-spacing:1px;line-height:1.12;color:#57358e;text-shadow:3px 4px 0 #ffd36e,5px 7px 0 #ff8bb1}
+.subtitle{margin:8px 0 0;font-size:clamp(.78rem,1.25vw,1.15rem);font-weight:800;letter-spacing:2px;color:#314879}
+.teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;flex:1;min-height:0}
+.team{--team:#fa568d;--team2:#ff8ab0;--symbol:"＋";position:relative;overflow:hidden;border:4px solid white;border-radius:30px;padding:17px 17px 16px;background:linear-gradient(145deg,var(--team),var(--team2));box-shadow:0 5px 15px #24304a30;display:flex;flex-direction:column;gap:11px;min-width:0}
+.team:after{content:var(--symbol);position:absolute;right:12px;top:25px;font-size:65px;font-weight:900;color:#26365f;opacity:.12;pointer-events:none}
+.team.blue{--team:#3282f5;--team2:#65b5ff;--symbol:"÷"}
+.team.green{--team:#25b957;--team2:#82dc43;--symbol:"×"}
+.team.orange{--team:#f2a04b;--team2:#ffd080;--symbol:"＋"}
+.team-head{display:flex;align-items:center;gap:12px;border-bottom:2px dashed #ffffffd9;padding-bottom:9px;position:relative;z-index:1}
+.dot{width:48px;height:48px;border:7px solid white;border-radius:17px;background:radial-gradient(circle at 35% 30%,#fff8,transparent 38%),linear-gradient(135deg,#fff,#ffffff88);box-shadow:inset 0 0 0 8px #ffffff2b;flex:none}
+.team-name{margin:0;min-width:0;width:100%;border:0;border-bottom:2px dashed #ffffffd9;border-radius:0;background:transparent;color:white;font:900 clamp(1.05rem,1.8vw,1.65rem)/1.2 "Trebuchet MS",Arial,sans-serif;text-shadow:1px 2px 2px #24304a55;letter-spacing:.3px;padding:2px 0 5px;outline:none}
+.team-name:focus{border-bottom:2px solid #fff2a8;background:#ffffff12}
+.team-name::placeholder{color:#ffffffc9}
+.math-icons{display:flex;align-items:center;justify-content:space-around;font-size:clamp(1rem,1.45vw,1.35rem);padding:0;opacity:.82;filter:drop-shadow(1px 1px 1px #26365f25)}
+.field{display:flex;flex-direction:column;gap:7px;min-height:0;flex:1.35;position:relative;z-index:1}
+.field label{display:flex;align-items:center;gap:9px;color:white;font-weight:1000;font-size:clamp(.95rem,1.35vw,1.12rem);text-shadow:1px 1px 2px #24304a55}
+.field label span{font-size:1.35rem}
+.field label span{font-size:1.25rem}
+textarea{width:100%;flex:1;min-height:112px;resize:vertical;border:3px solid #ffffffed;border-radius:23px;background:#fffaf3f2;color:#34496d;padding:15px 16px;font:650 clamp(1rem,1.35vw,1.15rem)/1.5 "Trebuchet MS",Arial,sans-serif;outline:none;box-shadow:0 2px 5px #26365f12}
+textarea:focus{border-color:#ffe08a;box-shadow:0 0 0 3px #ffffff55}
+textarea::placeholder{color:#7a8da6;opacity:1}
+.timerbar{border:4px solid white;border-radius:30px;background:linear-gradient(100deg,#fff5d2,#f5eaff 60%,#dff7ff);padding:9px 15px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;box-shadow:0 5px 15px #24304a30}
+.clock{font-size:clamp(2.5rem,4.5vw,4rem);line-height:1;filter:drop-shadow(0 2px 1px #b17b45)}
+.timer-title{font-weight:900;font-size:clamp(.9rem,1.3vw,1.2rem);white-space:nowrap}
+.time{font-size:clamp(2.5rem,4vw,3.6rem);font-weight:900;color:#5b5198;font-variant-numeric:tabular-nums;min-width:145px;text-align:center}
+.timerbar input{width:66px;border:2px solid #e1d8f4;border-radius:12px;padding:9px;font-size:1rem;font-weight:800;text-align:center;background:white;color:#34496d}
+button{border:0;border-radius:16px;padding:11px 15px;background:#eee8ff;color:#3e397c;font-weight:900;font-size:.95rem;cursor:pointer}
+button.primary{background:#5b5198;color:white}
+button:hover{filter:brightness(.97);transform:translateY(-1px)}
+.small-note{text-align:center;color:#ffffffdd;font-size:.75rem;text-shadow:0 1px 2px #24304a66}
+@media(max-width:1050px){.teams{grid-template-columns:repeat(2,minmax(0,1fr))}.team{min-height:380px}}
+@media(max-width:620px){body{padding:8px}.teams{grid-template-columns:1fr}.team{min-height:390px}header{border-radius:22px}.timerbar{border-radius:22px}}
+</style>
+</head>
+<body>
+<div class="board">
+<header>
+<h1>TALDE ELKARRERAGILEAK</h1>
+<p class="subtitle">PENTSATU · PARTEKATU · ELKARREKIN IKASI</p>
+</header>
+<main class="teams">
+<section class="team pink">
+  <div class="team-head"><div class="dot"></div><input class="team-name" aria-label="1. taldearen izena" data-save="t1-name" value="1. TALDEA"></div>
+  <div class="math-icons"><span>🧮</span><span>➕</span><span>🔢</span><span>📐</span></div>
+  <div class="field"><label><span>🎯</span> ZER LANDUKO DUGU?</label><textarea data-save="t1-work" placeholder="Idatzi hemen talde honek landuko duena..."></textarea></div>
+  <div class="field"><label><span>🎒</span> BEHARREZKO MATERIALA</label><textarea data-save="t1-material" placeholder="Zer material beharko dugu?"></textarea></div>
+</section>
+<section class="team blue">
+  <div class="team-head"><div class="dot"></div><input class="team-name" aria-label="2. taldearen izena" data-save="t2-name" value="2. TALDEA"></div>
+  <div class="math-icons"><span>📏</span><span>➗</span><span>📊</span><span>🔷</span></div>
+  <div class="field"><label><span>🎯</span> ZER LANDUKO DUGU?</label><textarea data-save="t2-work" placeholder="Idatzi hemen talde honek landuko duena..."></textarea></div>
+  <div class="field"><label><span>🎒</span> BEHARREZKO MATERIALA</label><textarea data-save="t2-material" placeholder="Zer material beharko dugu?"></textarea></div>
+</section>
+<section class="team green">
+  <div class="team-head"><div class="dot"></div><input class="team-name" aria-label="3. taldearen izena" data-save="t3-name" value="3. TALDEA"></div>
+  <div class="math-icons"><span>🎲</span><span>✖️</span><span>🧩</span><span>📈</span></div>
+  <div class="field"><label><span>🎯</span> ZER LANDUKO DUGU?</label><textarea data-save="t3-work" placeholder="Idatzi hemen talde honek landuko duena..."></textarea></div>
+  <div class="field"><label><span>🎒</span> BEHARREZKO MATERIALA</label><textarea data-save="t3-material" placeholder="Zer material beharko dugu?"></textarea></div>
+</section>
+<section class="team orange">
+  <div class="team-head"><div class="dot"></div><input class="team-name" aria-label="4. taldearen izena" data-save="t4-name" value="4. TALDEA"></div>
+  <div class="math-icons"><span>🟠</span><span>➕</span><span>🧠</span><span>🧱</span></div>
+  <div class="field"><label><span>🎯</span> ZER LANDUKO DUGU?</label><textarea data-save="t4-work" placeholder="Idatzi hemen talde honek landuko duena..."></textarea></div>
+  <div class="field"><label><span>🎒</span> BEHARREZKO MATERIALA</label><textarea data-save="t4-material" placeholder="Zer material beharko dugu?"></textarea></div>
+</section>
+</main>
+<section class="timerbar">
+  <div class="clock">⏱️</div><div class="timer-title">KRONOMETROA</div>
+  <div class="time" id="display">30:00</div>
+  <label for="minutes">Minutuak</label><input id="minutes" type="number" min="1" max="180" value="30">
+  <button class="primary" id="start">▶ Hasi</button>
+  <button id="pause">Ⅱ Pausatu</button>
+  <button id="reset">↻ Berrabiarazi</button>
+  <button data-min="5">5 min</button><button data-min="10">10 min</button><button data-min="15">15 min</button><button data-min="30">30 min</button>
+</section>
+<div class="small-note">Testuak automatikoki gordetzen dira nabigatzaile honetan.</div>
+</div>
+<script>
+const fields=[...document.querySelectorAll('textarea[data-save]')];
+fields.forEach(el=>{const key='talde-elkarreragileak-v2-'+el.dataset.save;try{el.value=localStorage.getItem(key)||'';}catch(e){}el.addEventListener('input',()=>{try{localStorage.setItem(key,el.value)}catch(e){}})});
+const teamNames=[...document.querySelectorAll('input.team-name[data-save]')];
+teamNames.forEach(el=>{const key='talde-elkarreragileak-v2-'+el.dataset.save;try{const saved=localStorage.getItem(key);if(saved!==null)el.value=saved;}catch(e){}el.addEventListener('input',()=>{try{localStorage.setItem(key,el.value)}catch(e){}})});
+let remaining=1800, interval=null;
+const display=document.getElementById('display'), minutes=document.getElementById('minutes');
+function render(){const m=Math.floor(remaining/60),s=remaining%60;display.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function stop(){if(interval){clearInterval(interval);interval=null}}
+function setMinutes(n){stop();remaining=Math.max(1,Math.min(180,Number(n)||30))*60;minutes.value=Math.max(1,Math.min(180,Number(n)||30));render()}
+document.getElementById('start').addEventListener('click',()=>{if(interval)return;if(remaining<=0)setMinutes(minutes.value);interval=setInterval(()=>{remaining=Math.max(0,remaining-1);render();if(remaining===0)stop()},1000)});
+document.getElementById('pause').addEventListener('click',stop);
+document.getElementById('reset').addEventListener('click',()=>setMinutes(minutes.value));
+minutes.addEventListener('change',()=>setMinutes(minutes.value));
+document.querySelectorAll('[data-min]').forEach(b=>b.addEventListener('click',()=>setMinutes(b.dataset.min)));
+render();
+</script>
+</body>
+</html>
